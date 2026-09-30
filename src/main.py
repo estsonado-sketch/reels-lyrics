@@ -62,8 +62,18 @@ def main():
         lines = lyrics.transcribe(clip, dur)
     print("Líneas de letra:", len(lines))
 
+    photo_folder = os.getenv("DRIVE_PHOTOS_FOLDER_ID")
+    pfiles = drive.list_files(photo_folder) if photo_folder else files
+    imgs = [f for f in pfiles if f["name"].lower().endswith(drive.IMG_EXT)]
+    if len(imgs) > 4:
+        imgs = random.sample(imgs, 4)           # cada reel usa 4 fotos distintas
+    photos = []
+    for i, im in enumerate(imgs):
+        photos.append(drive.download(im, os.path.join(work, f"foto{i}{os.path.splitext(im['name'])[1]}")))
+    print("Fotos de fondo desde Drive:", len(photos))
+
     out = os.path.join(work, "reel.mp4")
-    render.render(audio, start, dur, lines, work, out)
+    render.render(audio, start, dur, lines, work, out, photos)
     tags = ""   # descripción vacía (sin hashtags)
 
     if dry:

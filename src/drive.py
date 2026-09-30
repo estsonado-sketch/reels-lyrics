@@ -1,11 +1,13 @@
 import os, re, requests
 
 API = "https://www.googleapis.com/drive/v3/files"
+IMG_EXT = (".jpg", ".jpeg", ".png", ".webp")
 AUDIO_EXT = (".mp3", ".m4a", ".wav", ".ogg", ".flac", ".aac", ".opus")
 
 
-def list_files():
-    key, folder = os.environ["GOOGLE_API_KEY"], os.environ["DRIVE_FOLDER_ID"]
+def list_files(folder=None):
+    key = os.environ["GOOGLE_API_KEY"]
+    folder = folder or os.environ["DRIVE_FOLDER_ID"]
     out, token = [], None
     while True:
         p = {"q": f"'{folder}' in parents and trashed=false", "key": key,

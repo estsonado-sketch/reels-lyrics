@@ -50,6 +50,7 @@ jobs:
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
+          DRIVE_PHOTOS_FOLDER_ID: ${{ secrets.DRIVE_PHOTOS_FOLDER_ID }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           PUBLISH_NOW: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_now }}

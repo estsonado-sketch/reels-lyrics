@@ -12,11 +12,12 @@ def audio_duration(path):
     return float(out.strip())
 
 
-def prepare_backgrounds(workdir):
-    files = sorted(f for ext in ("jpg", "jpeg", "png", "webp")
-                   for f in glob.glob(os.path.join(ROOT, "assets", "backgrounds", f"*.{ext}")))
+def prepare_backgrounds(workdir, files=None):
+    if not files:   # respaldo: fotos del repo
+        files = sorted(f for ext in ("jpg", "jpeg", "png", "webp")
+                       for f in glob.glob(os.path.join(ROOT, "assets", "backgrounds", f"*.{ext}")))
     if not files:
-        raise SystemExit("Faltan fotos en assets/backgrounds/")
+        raise SystemExit("No hay fotos de fondo (ni en Drive ni en assets/backgrounds/)")
     files = (files * 4)[:4]
     outs = []
     for i, f in enumerate(files):
@@ -66,8 +67,8 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
     open(path, "w", encoding="utf-8").write(hdr + "\n".join(ev) + "\n")
 
 
-def render(audio, start, dur, lines, workdir, out):
-    bgs = prepare_backgrounds(workdir)
+def render(audio, start, dur, lines, workdir, out, photos=None):
+    bgs = prepare_backgrounds(workdir, photos)
     lst = os.path.join(workdir, "bg.txt")
     n = math.ceil(dur / C.BG_SECONDS) + 4
     with open(lst, "w") as f:
