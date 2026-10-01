@@ -1,4 +1,5 @@
 requests
+google-auth
 Pillow
 numpy
 faster-whisper

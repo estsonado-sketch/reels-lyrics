@@ -62,7 +62,7 @@ def main():
         lines = lyrics.transcribe(clip, dur)
     print("Líneas de letra:", len(lines))
 
-    photo_folder = os.getenv("DRIVE_PHOTOS_FOLDER_ID")
+    photo_folder = os.getenv("DRIVE_PHOTOS_FOLDER_ID", "").strip()
     pfiles = drive.list_files(photo_folder) if photo_folder else files
     imgs = [f for f in pfiles if f["name"].lower().endswith(drive.IMG_EXT)]
     if len(imgs) > 4:

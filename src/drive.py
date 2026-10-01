@@ -1,22 +1,44 @@
-import os, re, requests
+import json, os, re, requests
 
 API = "https://www.googleapis.com/drive/v3/files"
 IMG_EXT = (".jpg", ".jpeg", ".png", ".webp")
 AUDIO_EXT = (".mp3", ".m4a", ".wav", ".ogg", ".flac", ".aac", ".opus")
+_token = None
+
+
+def _auth():
+    """Cuenta de servicio (carpetas privadas) o, si no hay, clave de API (carpetas públicas)."""
+    global _token
+    sa = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
+    if sa:
+        if _token is None:
+            from google.oauth2 import service_account
+            from google.auth.transport.requests import Request
+            creds = service_account.Credentials.from_service_account_info(
+                json.loads(sa), scopes=["https://www.googleapis.com/auth/drive.readonly"])
+            creds.refresh(Request())
+            _token = creds.token
+        return {"Authorization": f"Bearer {_token}"}, {}
+    return {}, {"key": os.environ["GOOGLE_API_KEY"]}
+
+
+def _get(url, params, **kw):
+    headers, extra = _auth()
+    r = requests.get(url, params={**params, **extra}, headers=headers, timeout=120, **kw)
+    if not r.ok:   # sin imprimir la URL ni credenciales
+        raise SystemExit(f"Error de Google Drive {r.status_code}: {r.text[:300]}")
+    return r
 
 
 def list_files(folder=None):
-    key = os.environ["GOOGLE_API_KEY"]
-    folder = folder or os.environ["DRIVE_FOLDER_ID"]
+    folder = folder or os.environ["DRIVE_FOLDER_ID"].strip()
     out, token = [], None
     while True:
-        p = {"q": f"'{folder}' in parents and trashed=false", "key": key,
+        p = {"q": f"'{folder}' in parents and trashed=false",
              "fields": "nextPageToken,files(id,name,mimeType)", "pageSize": 1000}
         if token:
             p["pageToken"] = token
-        r = requests.get(API, params=p, timeout=60)
-        r.raise_for_status()
-        d = r.json()
+        d = _get(API, p).json()
         out += d["files"]
         token = d.get("nextPageToken")
         if not token:
@@ -36,9 +58,7 @@ def find_srt(audio_name, files):
 
 
 def download(file, dest):
-    r = requests.get(f"{API}/{file['id']}", params={"alt": "media", "key": os.environ["GOOGLE_API_KEY"]},
-                     stream=True, timeout=120)
-    r.raise_for_status()
+    r = _get(f"{API}/{file['id']}", {"alt": "media"}, stream=True)
     with open(dest, "wb") as fh:
         for chunk in r.iter_content(1 << 20):
             fh.write(chunk)

@@ -48,6 +48,7 @@ jobs:
 
       - name: Generar y publicar
         env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
           DRIVE_PHOTOS_FOLDER_ID: ${{ secrets.DRIVE_PHOTOS_FOLDER_ID }}
