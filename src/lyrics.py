@@ -1,4 +1,5 @@
-import re
+import re, subprocess
+import numpy as np
 from . import config
 
 CLEAN = re.compile(r"[¿?¡!,.;:\"“”()\[\]…]+")
@@ -25,10 +26,18 @@ def _group(words, total):
     return [tuple(l) for l in lines]
 
 
+def load_audio(path):
+    """Decodifica con ffmpeg a float32 mono 16 kHz (evita el decodificador 'av' de faster-whisper)."""
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-f", "f32le", "-ac", "1", "-ar", "16000", "-"],
+                         check=True, capture_output=True).stdout
+    return np.frombuffer(raw, dtype=np.float32)
+
+
 def transcribe(audio_path, total):
     from faster_whisper import WhisperModel
+    audio = load_audio(audio_path)
     model = WhisperModel(config.WHISPER_MODEL, device="cpu", compute_type="int8")
-    segs, _ = model.transcribe(audio_path, language="es", word_timestamps=True,
+    segs, _ = model.transcribe(audio, language="es", word_timestamps=True,
                                vad_filter=False, condition_on_previous_text=False)
     words = []
     for s in segs:
