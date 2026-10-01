@@ -6,7 +6,7 @@ W, H, FPS = 1080, 1920, 60
 BG_SECONDS = 0.50           # duración de cada foto de fondo
 ZOOM = 1.0                  # zoom fijo inicial sobre las fotos (1.0 = sin zoom fijo)
 ZOOM_END = 1.45             # zoom animado: el fondo se acerca de 1.0 a este valor durante el video
-DARKEN = 0.12               # 1.0 = sin oscurecer, menor = más oscuro
+DARKEN = 0.09               # 1.0 = sin oscurecer, menor = más oscuro
 PURPLE = (120, 50, 210)     # color del filtro
 PURPLE_AMOUNT = 0.16        # intensidad del filtro púrpura (leve)
 FLIP = "all"                # "alternate": foto normal y luego volteada | "all": todas volteadas | "none"
