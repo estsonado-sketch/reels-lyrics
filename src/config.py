@@ -5,8 +5,8 @@ MAX_SECONDS = 25.0          # duración máxima del reel
 W, H, FPS = 1080, 1920, 60
 BG_SECONDS = 0.50           # duración de cada foto de fondo
 ZOOM = 1.0                  # zoom fijo inicial sobre las fotos (1.0 = sin zoom fijo)
-ZOOM_END = 1.35             # zoom animado: el fondo se acerca de 1.0 a este valor durante el video
-DARKEN = 0.16               # 1.0 = sin oscurecer, menor = más oscuro
+ZOOM_END = 1.45             # zoom animado: el fondo se acerca de 1.0 a este valor durante el video
+DARKEN = 0.12               # 1.0 = sin oscurecer, menor = más oscuro
 PURPLE = (120, 50, 210)     # color del filtro
 PURPLE_AMOUNT = 0.16        # intensidad del filtro púrpura (leve)
 MIRROR = "horizontal"       # "horizontal" (izq->der), "vertical" (arriba->abajo) o "none"
@@ -24,7 +24,7 @@ MAX_CHARS_LINE = 18         # máx. de caracteres por línea de letra
 WATERMARK_FONT = "Bebas Neue"   # la marca de agua se queda como estaba
 WATERMARK = "ESTÁ SONANDO"
 WATERMARK_SIZE = 52
-WATERMARK_Y = 1065          # debajo de la letra
+WATERMARK_Y = 1020          # debajo de la letra
 
 # ---- Whisper (transcripción gratis en el runner) ----
 WHISPER_MODEL = os.getenv("WHISPER_MODEL", "large-v3")   # small < medium < large-v3 (más preciso, más lento)
