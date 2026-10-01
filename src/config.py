@@ -26,7 +26,7 @@ WATERMARK_SIZE = 52
 WATERMARK_Y = 1065          # debajo de la letra
 
 # ---- Whisper (transcripción gratis en el runner) ----
-WHISPER_MODEL = os.getenv("WHISPER_MODEL", "medium")   # small = más rápido, medium = más preciso
+WHISPER_MODEL = os.getenv("WHISPER_MODEL", "large-v3")   # small < medium < large-v3 (más preciso, más lento)
 
 # ---- Publicación ----
 GRAPH_VERSION = os.getenv("GRAPH_VERSION", "v25.0")

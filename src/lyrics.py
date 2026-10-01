@@ -37,13 +37,19 @@ def transcribe(audio_path, total):
     from faster_whisper import WhisperModel
     audio = load_audio(audio_path)
     model = WhisperModel(config.WHISPER_MODEL, device="cpu", compute_type="int8")
-    segs, _ = model.transcribe(audio, language="es", word_timestamps=True,
-                               vad_filter=False, condition_on_previous_text=False)
+    segs, _ = model.transcribe(
+        audio, language="es", word_timestamps=True, vad_filter=False,
+        beam_size=5, best_of=5, condition_on_previous_text=False,
+        initial_prompt="Letra de una canción de música urbana en español.",
+        compression_ratio_threshold=2.2, no_speech_threshold=0.5,
+        hallucination_silence_threshold=2.0)
     words = []
     for s in segs:
+        if s.no_speech_prob > 0.85 and s.avg_logprob < -1.2:   # tramo sin voz / alucinación
+            continue
         for w in (s.words or []):
             t = CLEAN.sub("", w.word).strip().upper()
-            if t:
+            if t and w.probability >= 0.15:
                 words.append((t, w.start, w.end))
     return _group(words, total)
 
