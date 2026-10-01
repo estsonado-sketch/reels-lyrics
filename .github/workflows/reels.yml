@@ -66,7 +66,9 @@ jobs:
           path: reel_preview.mp4
 
       - name: Guardar rotación de canciones
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         run: |
+          [ -f state/used.json ] || { echo "Nada que guardar"; exit 0; }
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add state/used.json
