@@ -6,8 +6,9 @@ def publish_reel(video_path, description):
     page, token = os.environ["FB_PAGE_ID"], os.environ["FB_PAGE_TOKEN"]
     base = f"https://graph.facebook.com/{C.GRAPH_VERSION}/{page}/video_reels"
 
-    r = requests.post(base, json={"upload_phase": "start", "access_token": token}, timeout=60)
-    r.raise_for_status()
+    r = requests.post(base, data={"upload_phase": "start", "access_token": token}, timeout=60)
+    if not r.ok:    # Facebook explica el motivo en el cuerpo de la respuesta
+        raise SystemExit(f"Facebook rechazó el inicio de la subida ({r.status_code}): {r.text[:600]}")
     video_id, upload_url = r.json()["video_id"], r.json()["upload_url"]
 
     size = os.path.getsize(video_path)
