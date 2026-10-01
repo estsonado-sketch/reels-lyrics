@@ -35,7 +35,7 @@ def main():
     work = tempfile.mkdtemp()
 
     files = drive.list_files()
-    audios = [f for f in files if f["name"].lower().endswith(drive.AUDIO_EXT)]
+    audios = [f for f in files if drive.is_audio(f)]
     if not audios:
         raise SystemExit("No hay audios en la carpeta de Drive")
     used = load_used()
@@ -64,12 +64,16 @@ def main():
 
     photo_folder = os.getenv("DRIVE_PHOTOS_FOLDER_ID", "").strip()
     pfiles = drive.list_files(photo_folder) if photo_folder else files
-    imgs = [f for f in pfiles if f["name"].lower().endswith(drive.IMG_EXT)]
+    imgs = [f for f in pfiles if drive.is_image(f)]
+    print(f"Archivos en la carpeta de fotos: {len(pfiles)} | fotos válidas (jpg/png/webp): {len(imgs)}")
+    if photo_folder and not imgs:
+        raise SystemExit("No encontré fotos en la carpeta de fotos de Drive. Revisá que esté compartida "
+                         "con el email de la cuenta de servicio y que las fotos sean jpg, png o webp (no HEIC).")
     if len(imgs) > 4:
         imgs = random.sample(imgs, 4)           # cada reel usa 4 fotos distintas
     photos = []
     for i, im in enumerate(imgs):
-        photos.append(drive.download(im, os.path.join(work, f"foto{i}{os.path.splitext(im['name'])[1]}")))
+        photos.append(drive.download(im, os.path.join(work, f"foto{i}{os.path.splitext(im['name'])[1] or '.jpg'}")))
     print("Fotos de fondo desde Drive:", len(photos))
 
     out = os.path.join(work, "reel.mp4")

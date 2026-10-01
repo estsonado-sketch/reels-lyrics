@@ -4,8 +4,9 @@ import os
 MAX_SECONDS = 25.0          # duración máxima del reel
 W, H, FPS = 1080, 1920, 60
 BG_SECONDS = 0.35           # duración de cada foto de fondo
-ZOOM = 1.18                 # zoom sobre las fotos
-DARKEN = 0.42               # 1.0 = sin oscurecer, menor = más oscuro
+ZOOM = 1.0                  # zoom fijo inicial sobre las fotos (1.0 = sin zoom fijo)
+ZOOM_END = 1.22             # zoom animado: el fondo se acerca de 1.0 a este valor durante el video
+DARKEN = 0.22               # 1.0 = sin oscurecer, menor = más oscuro
 PURPLE = (120, 50, 210)     # color del filtro
 PURPLE_AMOUNT = 0.16        # intensidad del filtro púrpura (leve)
 MIRROR = "horizontal"       # "horizontal" (izq->der), "vertical" (arriba->abajo) o "none"
@@ -17,7 +18,7 @@ MIRROR = "horizontal"       # "horizontal" (izq->der), "vertical" (arriba->abajo
 #   "Bebas Neue"              -> la anterior
 FONT_NAME = "Jost Bold Italic"
 LYRIC_ITALIC = 0            # 0 si el archivo ya es cursiva; 1 para inclinar una fuente recta
-LYRIC_SIZE = 84
+LYRIC_SIZE = 64
 LYRIC_Y = 930               # centro de la letra (pantalla = 1920 de alto)
 MAX_CHARS_LINE = 18         # máx. de caracteres por línea de letra
 WATERMARK_FONT = "Bebas Neue"   # la marca de agua se queda como estaba

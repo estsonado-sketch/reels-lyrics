@@ -81,10 +81,14 @@ def render(audio, start, dur, lines, workdir, out, photos=None):
     af = "aresample=48000"
     if dur >= C.MAX_SECONDS - 0.05:          # si se cortó a 25 s, fade-out suave
         af += f",afade=t=out:st={dur - 0.6:.2f}:d=0.6"
+    z = f"(1+({C.ZOOM_END}-1)*min(t/{dur:.3f},1))"   # zoom animado 1.0 -> ZOOM_END
     cmd = ["ffmpeg", "-y", "-v", "error",
            "-f", "concat", "-safe", "0", "-i", lst,
            "-ss", str(start), "-t", f"{dur:.3f}", "-i", audio,
-           "-vf", f"fps={C.FPS},ass={ass}:fontsdir={fonts},format=yuv420p",
+           "-vf", (f"fps={C.FPS},"
+                   f"scale=w='2*trunc({C.W // 2}*{z})':h='2*trunc({C.H // 2}*{z})':eval=frame:flags=bicubic,"
+                   f"crop={C.W}:{C.H},"
+                   f"ass={ass}:fontsdir={fonts},format=yuv420p"),
            "-af", af, "-t", f"{dur:.3f}",
            "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-profile:v", "high",
            "-g", str(C.FPS * 2), "-keyint_min", str(C.FPS * 2), "-sc_threshold", "0",

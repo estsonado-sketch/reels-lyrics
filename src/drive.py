@@ -35,6 +35,7 @@ def list_files(folder=None):
     out, token = [], None
     while True:
         p = {"q": f"'{folder}' in parents and trashed=false",
+             "supportsAllDrives": "true", "includeItemsFromAllDrives": "true",
              "fields": "nextPageToken,files(id,name,mimeType)", "pageSize": 1000}
         if token:
             p["pageToken"] = token
@@ -45,8 +46,17 @@ def list_files(folder=None):
             return out
 
 
+def is_image(f):
+    return f["name"].lower().endswith(IMG_EXT) or f.get("mimeType", "") in (
+        "image/jpeg", "image/png", "image/webp")
+
+
+def is_audio(f):
+    return f["name"].lower().endswith(AUDIO_EXT) or f.get("mimeType", "").startswith("audio/")
+
+
 def list_audios():
-    return [f for f in list_files() if f["name"].lower().endswith(AUDIO_EXT)]
+    return [f for f in list_files() if is_audio(f)]
 
 
 def find_srt(audio_name, files):
@@ -58,7 +68,7 @@ def find_srt(audio_name, files):
 
 
 def download(file, dest):
-    r = _get(f"{API}/{file['id']}", {"alt": "media"}, stream=True)
+    r = _get(f"{API}/{file['id']}", {"alt": "media", "supportsAllDrives": "true"}, stream=True)
     with open(dest, "wb") as fh:
         for chunk in r.iter_content(1 << 20):
             fh.write(chunk)
