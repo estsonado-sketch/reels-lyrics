@@ -27,15 +27,14 @@ def prepare_backgrounds(workdir, files=None):
         im = im.resize((math.ceil(im.width * scale), math.ceil(im.height * scale)), Image.LANCZOS)
         l, t = (im.width - C.W) // 2, (im.height - C.H) // 2
         a = np.asarray(im.crop((l, t, l + C.W, t + C.H))).astype(np.float32)
-        if C.MIRROR == "horizontal":
-            a[:, C.W // 2:] = a[:, : C.W // 2][:, ::-1]
-        elif C.MIRROR == "vertical":
-            a[C.H // 2:] = a[: C.H // 2][::-1]
         a *= C.DARKEN
         a = a * (1 - C.PURPLE_AMOUNT) + np.array(C.PURPLE, np.float32) * C.DARKEN * C.PURPLE_AMOUNT * 1.6
-        p = os.path.join(workdir, f"bg{i}.png")
-        Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)).save(p)
-        outs.append(p)
+        a = np.clip(a, 0, 255).astype(np.uint8)
+        variants = [a, a[:, ::-1]] if C.FLIP == "alternate" else [a[:, ::-1]] if C.FLIP == "all" else [a]
+        for j, v in enumerate(variants):          # a[:, ::-1] = volteado horizontal
+            p = os.path.join(workdir, f"bg{i}_{j}.png")
+            Image.fromarray(np.ascontiguousarray(v)).save(p)
+            outs.append(p)
     return outs
 
 
@@ -73,8 +72,8 @@ def render(audio, start, dur, lines, workdir, out, photos=None):
     n = math.ceil(dur / C.BG_SECONDS) + 4
     with open(lst, "w") as f:
         for i in range(n):
-            f.write(f"file '{bgs[i % 4]}'\nduration {C.BG_SECONDS}\n")
-        f.write(f"file '{bgs[(n - 1) % 4]}'\n")
+            f.write(f"file '{bgs[i % len(bgs)]}'\nduration {C.BG_SECONDS}\n")
+        f.write(f"file '{bgs[(n - 1) % len(bgs)]}'\n")
     ass = os.path.join(workdir, "lyrics.ass")
     write_ass(lines, dur, ass)
     fonts = os.path.join(ROOT, "fonts")
