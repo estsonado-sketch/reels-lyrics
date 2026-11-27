@@ -25,13 +25,14 @@ WATERMARK_FONT = "Bebas Neue"   # la marca de agua se queda como estaba
 WATERMARK = "ESTÁ SONANDO"
 WATERMARK_SIZE = 40
 WATERMARK_Y = 1000          # debajo de la letra
+WATERMARK_ALPHA = "98"       # transparencia en hex: 00 = opaco, FF = invisible (antes 70; mayor = más transparente)
 
 # ---- Whisper (transcripción gratis en el runner) ----
 WHISPER_MODEL = os.getenv("WHISPER_MODEL", "large-v3")   # small < medium < large-v3 (más preciso, más lento)
 
 # ---- Publicación ----
 GRAPH_VERSION = os.getenv("GRAPH_VERSION", "v25.0")
-SLOTS_UTC = [(20, 0), (23, 0)]  # 17:00 y 20:00 de Uruguay (UTC-3)
+SLOTS_UTC = [(14, 0), (17, 30)]  # 11:00 y 14:30 de Uruguay (UTC-3)
 MAX_WAIT_MIN = 40
 
 HASHTAGS = [

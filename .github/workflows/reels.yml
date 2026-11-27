@@ -3,8 +3,8 @@ name: Reels diarios
 on:
   schedule:
     # Uruguay = UTC-3. Arranca 15 min antes y el script espera al minuto exacto.
-    - cron: "45 19 * * *"   # publica 17:00 (UY)
-    - cron: "45 22 * * *"   # publica 20:00 (UY)
+    - cron: "45 13 * * *"   # publica 11:00 (UY)
+    - cron: "15 17 * * *"   # publica 14:30 (UY)
   workflow_dispatch:
     inputs:
       publish_now:

@@ -58,7 +58,7 @@ Style: Mark,{C.WATERMARK_FONT},{C.WATERMARK_SIZE},&H00FFFFFF,&H00FFFFFF,&H000000
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 """
-    ev = [f"Dialogue: 0,{_t(0)},{_t(dur)},Mark,,0,0,0,,{{\\an5\\pos({C.W // 2},{C.WATERMARK_Y})\\alpha&H70&}}{C.WATERMARK}"]
+    ev = [f"Dialogue: 0,{_t(0)},{_t(dur)},Mark,,0,0,0,,{{\\an5\\pos({C.W // 2},{C.WATERMARK_Y})\\alpha&H{C.WATERMARK_ALPHA}&}}{C.WATERMARK}"]
     for text, a, b in lines:
         if b - a < 0.15:
             continue
